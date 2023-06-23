@@ -1,0 +1,471 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ACPIError" xml:space="preserve">
+    <value>Не удаётся подключиться к ASUS ACPI. Программа не может функционировать без этого. Попробуйте восстановить Asus System Control Interface</value>
+  </data>
+  <data name="AlertDGPU" xml:space="preserve">
+    <value>Кажется, что GPU используется, отключить её?</value>
+  </data>
+  <data name="AlertDGPUTitle" xml:space="preserve">
+    <value>Eco Режим</value>
+  </data>
+  <data name="AlertUltimateOff" xml:space="preserve">
+    <value>Отключение ультимативного режима требует перезагрузки</value>
+  </data>
+  <data name="AlertUltimateOn" xml:space="preserve">
+    <value>Ультимативный режим требует перезагрузки</value>
+  </data>
+  <data name="AlertUltimateTitle" xml:space="preserve">
+    <value>Перезагрузиться?</value>
+  </data>
+  <data name="AnimationSpeed" xml:space="preserve">
+    <value>Скорость анимаций</value>
+  </data>
+  <data name="AnimeMatrix" xml:space="preserve">
+    <value>Аниме Матрица</value>
+  </data>
+  <data name="AppAlreadyRunning" xml:space="preserve">
+    <value>Програма уже запущена</value>
+  </data>
+  <data name="AppAlreadyRunningText" xml:space="preserve">
+    <value>G-Helper уже запущен. Проверьте значок в системном трее.</value>
+  </data>
+  <data name="ApplyFanCurve" xml:space="preserve">
+    <value>Сохранить кривую вентиляторов</value>
+  </data>
+  <data name="ApplyPowerLimits" xml:space="preserve">
+    <value>Сохранить лимиты мощности</value>
+  </data>
+  <data name="ApplyWindowsPowerPlan" xml:space="preserve">
+    <value>Автоматически установить Windows Power Modes</value>
+  </data>
+  <data name="AsusServicesRunning" xml:space="preserve">
+    <value>Запущенные сервисы Asus</value>
+  </data>
+  <data name="AuraBreathe" xml:space="preserve">
+    <value>Breathe</value>
+  </data>
+  <data name="AuraColorCycle" xml:space="preserve">
+    <value>Color cycle</value>
+  </data>
+  <data name="AuraFast" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="AuraNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="AuraRainbow" xml:space="preserve">
+    <value>Rainbow</value>
+  </data>
+  <data name="AuraSlow" xml:space="preserve">
+    <value>Slow</value>
+  </data>
+  <data name="AuraStatic" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="AuraStrobe" xml:space="preserve">
+    <value>Strobe</value>
+  </data>
+  <data name="AutoMode" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="AutoRefreshTooltip" xml:space="preserve">
+    <value>Частота 60Гц для максимального сохранения батареи</value>
+  </data>
+  <data name="Awake" xml:space="preserve">
+    <value>Работает</value>
+  </data>
+  <data name="BacklightTimeout" xml:space="preserve">
+    <value>Тайм-аут подсветки на батарее</value>
+  </data>
+  <data name="BacklightTimeoutPlugged" xml:space="preserve">
+    <value>Тайм-аут подсветки на зарядке (0 - мгновенно)</value>
+  </data>
+  <data name="Balanced" xml:space="preserve">
+    <value>Баланс</value>
+  </data>
+  <data name="BatteryChargeLimit" xml:space="preserve">
+    <value>Лимит заряда батареи</value>
+  </data>
+  <data name="BiosAndDriverUpdates" xml:space="preserve">
+    <value>Обновления BIOS и драйвера</value>
+  </data>
+  <data name="Boot" xml:space="preserve">
+    <value>Старт</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="BrightnessDown" xml:space="preserve">
+    <value>Уменьшить яркость</value>
+  </data>
+  <data name="BrightnessUp" xml:space="preserve">
+    <value>Увеличить яркость</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Цвет</value>
+  </data>
+  <data name="CPUBoost" xml:space="preserve">
+    <value>CPU Boost</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Стандарт</value>
+  </data>
+  <data name="DisableOverdrive" xml:space="preserve">
+    <value>Отключить Display Overdrive</value>
+  </data>
+  <data name="Discharging" xml:space="preserve">
+    <value>Разрядка</value>
+  </data>
+  <data name="DownloadUpdate" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="DriverAndSoftware" xml:space="preserve">
+    <value>Драйвера</value>
+  </data>
+  <data name="EcoGPUTooltip" xml:space="preserve">
+    <value>Отключить GPU, чтобы сэкономить заряд</value>
+  </data>
+  <data name="EcoMode" xml:space="preserve">
+    <value>Eco</value>
+  </data>
+  <data name="Extra" xml:space="preserve">
+    <value>Дополнительно</value>
+  </data>
+  <data name="ExtraSettings" xml:space="preserve">
+    <value>Доп. настройки</value>
+  </data>
+  <data name="FactoryDefaults" xml:space="preserve">
+    <value>Стандартные</value>
+  </data>
+  <data name="FanCurves" xml:space="preserve">
+    <value>Кривые вентиляторов</value>
+  </data>
+  <data name="FanProfileCPU" xml:space="preserve">
+    <value>CPU вентилятор</value>
+  </data>
+  <data name="FanProfileGPU" xml:space="preserve">
+    <value>GPU вентилятор</value>
+  </data>
+  <data name="FanProfileMid" xml:space="preserve">
+    <value>Доп. вентилятор</value>
+  </data>
+  <data name="FanProfiles" xml:space="preserve">
+    <value>Профили вентиляторов</value>
+  </data>
+  <data name="FansAndPower" xml:space="preserve">
+    <value>Вентиляторы и мощность</value>
+  </data>
+  <data name="FansPower" xml:space="preserve">
+    <value>Вентиляторы и мощность</value>
+  </data>
+  <data name="FnLock" xml:space="preserve">
+    <value>Горячие клавиши Fn+F работают без нажатия Fn</value>
+  </data>
+  <data name="GPUChanging" xml:space="preserve">
+    <value>Изменение</value>
+  </data>
+  <data name="GPUMode" xml:space="preserve">
+    <value>Режим GPU</value>
+  </data>
+  <data name="GPUModeEco" xml:space="preserve">
+    <value>Только iGPU</value>
+  </data>
+  <data name="GPUModeStandard" xml:space="preserve">
+    <value>iGPU + dGPU</value>
+  </data>
+  <data name="GPUModeUltimate" xml:space="preserve">
+    <value>Только dGPU</value>
+  </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Привзяка клавиш</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Клавиатура</value>
+  </data>
+  <data name="KeyboardAuto" xml:space="preserve">
+    <value>Выключить подсветку на батарее и включить на зарядке</value>
+  </data>
+  <data name="KillGpuApps" xml:space="preserve">
+    <value>Закрывать приложения, использующие GPU, во время перехода в режим Eco</value>
+  </data>
+  <data name="LaptopBacklight" xml:space="preserve">
+    <value>Подсветка</value>
+  </data>
+  <data name="LaptopKeyboard" xml:space="preserve">
+    <value>Клавиатура</value>
+  </data>
+  <data name="LaptopScreen" xml:space="preserve">
+    <value>Дисплей</value>
+  </data>
+  <data name="MatrixAudio" xml:space="preserve">
+    <value>Аудио визуализатор</value>
+  </data>
+  <data name="MatrixBanner" xml:space="preserve">
+    <value>Банер</value>
+  </data>
+  <data name="MatrixBright" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="MatrixLogo" xml:space="preserve">
+    <value>Логотип</value>
+  </data>
+  <data name="MatrixOff" xml:space="preserve">
+    <value>Выключено</value>
+  </data>
+  <data name="MatrixPicture" xml:space="preserve">
+    <value>Картинка</value>
+  </data>
+  <data name="MaxRefreshTooltip" xml:space="preserve">
+    <value>Максимальная частота оновления для минимизации задержек</value>
+  </data>
+  <data name="MinRefreshTooltip" xml:space="preserve">
+    <value>Частота 60Гц, чтобы сохранить заряд батареи</value>
+  </data>
+  <data name="Multizone" xml:space="preserve">
+    <value>Мультизонный</value>
+  </data>
+  <data name="MuteMic" xml:space="preserve">
+    <value>Выключить микрофон</value>
+  </data>
+  <data name="OpenGHelper" xml:space="preserve">
+    <value>Открыть GHelper</value>
+  </data>
+  <data name="Optimized" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="OptimizedGPUTooltip" xml:space="preserve">
+    <value>Включает Eco на батарее и Стандартный на зарядке</value>
+  </data>
+  <data name="OptimizedUSBC" xml:space="preserve">
+    <value>Выключать GPU на зарядке от USB-C в режиме Авто</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Другое</value>
+  </data>
+  <data name="Overdrive" xml:space="preserve">
+    <value>Overdrive</value>
+  </data>
+  <data name="PerformanceMode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="PictureGif" xml:space="preserve">
+    <value>Картинка / GIF</value>
+  </data>
+  <data name="PlayPause" xml:space="preserve">
+    <value>Пуск / Пауза</value>
+  </data>
+  <data name="PowerLimits" xml:space="preserve">
+    <value>Лимиты Мощности</value>
+  </data>
+  <data name="PPTExperimental" xml:space="preserve">
+    <value>Настройка лимитов мощности является экспериментальной функцией. Используйте осторожно и на свой страх и риск!</value>
+  </data>
+  <data name="PrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="RPM" xml:space="preserve">
+    <value>Обороты</value>
+  </data>
+  <data name="RunOnStartup" xml:space="preserve">
+    <value>Запускать при запуске системы</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Выключение</value>
+  </data>
+  <data name="Silent" xml:space="preserve">
+    <value>Тихий</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Сон</value>
+  </data>
+  <data name="StandardGPUTooltip" xml:space="preserve">
+    <value>Включает dGPU для нормального использования</value>
+  </data>
+  <data name="StandardMode" xml:space="preserve">
+    <value>Стандартний</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Запустить</value>
+  </data>
+  <data name="StartingServices" xml:space="preserve">
+    <value>Сервисы запускаются</value>
+  </data>
+  <data name="StartupError" xml:space="preserve">
+    <value>Ошибка запуска</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="StoppingServices" xml:space="preserve">
+    <value>Сервисы останавливаются</value>
+  </data>
+  <data name="ToggleAura" xml:space="preserve">
+    <value>Аура</value>
+  </data>
+  <data name="ToggleFnLock" xml:space="preserve">
+    <value>Fn-Lock</value>
+  </data>
+  <data name="ToggleMiniled" xml:space="preserve">
+    <value>Мини-лед (если есть)</value>
+  </data>
+  <data name="ToggleScreen" xml:space="preserve">
+    <value>Переключить экран</value>
+  </data>
+  <data name="Turbo" xml:space="preserve">
+    <value>Турбо</value>
+  </data>
+  <data name="TurnedOff" xml:space="preserve">
+    <value>Выключен</value>
+  </data>
+  <data name="TurnOffOnBattery" xml:space="preserve">
+    <value>Выключать на батарее</value>
+  </data>
+  <data name="UltimateGPUTooltip" xml:space="preserve">
+    <value>Подключает экран ноутбука к dGPU, чтобы повысить FPS</value>
+  </data>
+  <data name="UltimateMode" xml:space="preserve">
+    <value>Ультимейт</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="VolumeDown" xml:space="preserve">
+    <value>Уменьшение громкости</value>
+  </data>
+  <data name="VolumeMute" xml:space="preserve">
+    <value>Выключить звук</value>
+  </data>
+  <data name="VolumeUp" xml:space="preserve">
+    <value>Прибавить звук</value>
+  </data>
+  <data name="WindowTop" xml:space="preserve">
+    <value>Держать окно всегда сверху</value>
+  </data>
+</root>
