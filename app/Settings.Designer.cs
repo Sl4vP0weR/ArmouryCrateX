@@ -1142,7 +1142,7 @@ namespace GHelper
             Padding = new Padding(10);
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "G-Helper";
+            Text = "Armoury Crate";
             Load += Settings_Load;
             panelMatrix.ResumeLayout(false);
             panelMatrix.PerformLayout();

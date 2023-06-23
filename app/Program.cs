@@ -12,7 +12,7 @@ namespace GHelper
     {
         public static NotifyIcon trayIcon = new NotifyIcon
         {
-            Text = "G-Helper",
+            Text = "Armoury Crate",
             Icon = Properties.Resources.standard,
             Visible = true
         };
