@@ -1,4 +1,4 @@
-﻿using GHelper.UI;
+﻿﻿using GHelper.UI;
 
 namespace GHelper
 {
@@ -1963,7 +1963,6 @@ namespace GHelper
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Armoury Crate";
-            Load += Settings_Load;
             panelMatrix.ResumeLayout(false);
             panelMatrix.PerformLayout();
             panelMatrixAuto.ResumeLayout(false);
