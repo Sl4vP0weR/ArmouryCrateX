@@ -4,23 +4,24 @@
 //
 
 
+using GHelper.Helpers;
 using System.Management;
+using System.Net;
 
 namespace Ryzen
 {
     internal class RyzenControl
     {
 
-        public const int MinCPUUV = -30;
+        public static int MinCPUUV => AppConfig.Get("min_uv", -40);
         public const int MaxCPUUV = 0;
 
         public const int MinIGPUUV = -20;
         public const int MaxIGPUUV = 0;
 
-        public const int MinTemp = 75;
+        public static int MinTemp => AppConfig.Get("min_temp", 75);
         public const int MaxTemp = 98;
 
-        public static string[] FAM = { "RAVEN", "PICASSO", "DALI", "RENOIR/LUCIENNE", "MATISSE", "VANGOGH", "VERMEER", "CEZANNE/BARCELO", "REMBRANDT", "PHOENIX", "RAPHAEL/DRAGON RANGE" };
         public static int FAMID { get; protected set; }
 
         public static string CPUModel = "";
@@ -39,6 +40,7 @@ namespace Ryzen
         //PHEONIX - 9
         //RAPHAEL/DRAGON RANGE - 10
         //MENDOCINO - 11
+        //HAWKPOINT - 12
 
         public static void Init()
         {
@@ -52,7 +54,8 @@ namespace Ryzen
                     CPUName = obj["Name"].ToString();
                     CPUModel = obj["Caption"].ToString();
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Logger.WriteLine(ex.Message);
             }
@@ -104,7 +107,7 @@ namespace Ryzen
                 FAMID = 8; //REMBRANDT
             }
 
-            if (CPUModel.Contains("Model " + Convert.ToString(116)))
+            if (CPUModel.Contains("Model " + Convert.ToString(116)) || CPUModel.Contains("Model " + Convert.ToString(120)))
             {
                 FAMID = 9; //PHEONIX 
             }
@@ -119,6 +122,11 @@ namespace Ryzen
                 FAMID = 11; //MENDOCINO 
             }
 
+            if (CPUModel.Contains("Model " + Convert.ToString(117)))
+            {
+                FAMID = 12; //HAWKPOINT 
+            }
+
             Logger.WriteLine($"CPU: {FAMID} - {CPUName} - {CPUModel}");
 
             SetAddresses();
@@ -130,10 +138,65 @@ namespace Ryzen
             return CPUName.Contains("AMD") || CPUName.Contains("Ryzen") || CPUName.Contains("Athlon") || CPUName.Contains("Radeon") || CPUName.Contains("AMD Custom APU 0405");
         }
 
-        public static bool IsRyzen9()
+        public static bool IsSupportedUV()
         {
             if (CPUName.Length == 0) Init();
-            return CPUName.Contains("Ryzen 9");
+            return CPUName.Contains("Ryzen 9") || CPUName.Contains("4900H") || CPUName.Contains("4800H") || CPUName.Contains("4600H");
+        }
+
+        public static bool IsSupportedUViGPU()
+        {
+            if (CPUName.Length == 0) Init();
+            return CPUName.Contains("6900H") || CPUName.Contains("7945H") || CPUName.Contains("7845H");
+        }
+
+        public static bool IsRingExsists()
+        {
+            string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
+            return File.Exists(exeDir + "\\" + "WinRing0x64.dll");
+        }
+
+        public static void DownloadRing()
+        {
+            //var appVersion = new Version(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            //string requestUri = "https://github.com/seerge/g-helper/releases/download/v" + appVersion.Major + "." + appVersion.Minor + "/PluginAdvancedSettings.zip";
+            string requestUri = "https://github.com/seerge/g-helper/releases/download/v0.150/PluginAdvancedSettings.zip";
+
+            Uri uri = new Uri(requestUri);
+
+            string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
+            string zipName = Path.GetFileName(uri.LocalPath);
+            string zipLocation = exeDir + "\\" + zipName;
+
+            using (WebClient client = new WebClient())
+            {
+                Logger.WriteLine(requestUri);
+                Logger.WriteLine(exeDir);
+                Logger.WriteLine(zipName);
+
+                try
+                {
+                    client.DownloadFile(uri, zipLocation);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(ex.Message);
+                    Logger.WriteLine(ex.ToString());
+                    if (!ProcessHelper.IsUserAdministrator() && !ex.Message.Contains("remote server")) ProcessHelper.RunAsAdmin("uv");
+                    return;
+                }
+
+                try
+                {
+                    System.IO.Compression.ZipFile.ExtractToDirectory(zipLocation, exeDir, overwriteFiles: true);
+                    File.Delete(zipLocation);
+                    ProcessHelper.RunAsAdmin("uv", true);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(ex.ToString());
+                }
+            }
         }
 
         public static void SetAddresses()
@@ -165,7 +228,7 @@ namespace Ryzen
                 Smu.PSMU_ADDR_RSP = 0x3B10A80;
                 Smu.PSMU_ADDR_ARG = 0x3B10A88;
             }
-            else if (FAMID == 5 || FAMID == 8 || FAMID == 9 || FAMID == 11)
+            else if (FAMID == 5 || FAMID == 8 || FAMID == 9 || FAMID == 11 || FAMID == 12)
             {
                 Smu.MP1_ADDR_MSG = 0x3B10528;
                 Smu.MP1_ADDR_RSP = 0x3B10578;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Acceleration" xml:space="preserve">
+    <value>가속</value>
+  </data>
   <data name="ACPIError" xml:space="preserve">
     <value>ASUS ACPI에 연결할 수 없어 응용 프로그램이 작동하지 않습니다. Asus System Control Interface를 먼저 설치하십시오.</value>
+  </data>
+  <data name="AlertAPUMemoryRestart" xml:space="preserve">
+    <value>변경사항을 적용하려면 기기를 다시 시작하십시오.</value>
+  </data>
+  <data name="AlertAPUMemoryRestartTitle" xml:space="preserve">
+    <value>지금 다시 시작하시겠습니까?</value>
   </data>
   <data name="AlertDGPU" xml:space="preserve">
     <value>GPU 사용량이 높습니다. 비활성화 하시겠습니까?</value>
@@ -133,7 +142,10 @@
     <value>Ultimate 모드를 켜기 위해서는 다시 시작해야 합니다.</value>
   </data>
   <data name="AlertUltimateTitle" xml:space="preserve">
-    <value>다시 시작하시겠습니까?</value>
+    <value>지금 다시 시작하시겠습니까?</value>
+  </data>
+  <data name="AllyController" xml:space="preserve">
+    <value>Ally 컨트롤러</value>
   </data>
   <data name="AnimationSpeed" xml:space="preserve">
     <value>애니메이션 속도</value>
@@ -147,6 +159,9 @@
   <data name="AppAlreadyRunningText" xml:space="preserve">
     <value>G-Helper가 이미 실행중입니다. 시스템 트레이에서 아이콘을 확인하십시오.</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>적용</value>
+  </data>
   <data name="ApplyFanCurve" xml:space="preserve">
     <value>사용자 설정 팬 커브 적용</value>
   </data>
@@ -156,32 +171,74 @@
   <data name="ApplyWindowsPowerPlan" xml:space="preserve">
     <value>윈도우 전원 모드 자동조절</value>
   </data>
+  <data name="APUMemory" xml:space="preserve">
+    <value>Memory Assigned to GPU</value>
+  </data>
   <data name="AsusServicesRunning" xml:space="preserve">
     <value>실행중인 Asus 서비스</value>
   </data>
+  <data name="AuraBatteryState" xml:space="preserve">
+    <value>배터리 상태</value>
+  </data>
   <data name="AuraBreathe" xml:space="preserve">
-    <value>Breathe</value>
+    <value>숨쉬기</value>
+  </data>
+  <data name="AuraClockwise" xml:space="preserve">
+    <value>시계 방향</value>
   </data>
   <data name="AuraColorCycle" xml:space="preserve">
-    <value>Color Cycle</value>
+    <value>색 순환</value>
+  </data>
+  <data name="AuraComet" xml:space="preserve">
+    <value>혜성</value>
+  </data>
+  <data name="AuraCounterClockwise" xml:space="preserve">
+    <value>반시계 방향</value>
   </data>
   <data name="AuraFast" xml:space="preserve">
     <value>빠르게</value>
+  </data>
+  <data name="AuraLightingMode" xml:space="preserve">
+    <value>조명 모드</value>
   </data>
   <data name="AuraNormal" xml:space="preserve">
     <value>보통</value>
   </data>
   <data name="AuraRainbow" xml:space="preserve">
-    <value>Rainbow</value>
+    <value>무지개</value>
+  </data>
+  <data name="AuraRandomColor" xml:space="preserve">
+    <value>랜덤</value>
+  </data>
+  <data name="AuraReact" xml:space="preserve">
+    <value>반응</value>
   </data>
   <data name="AuraSlow" xml:space="preserve">
     <value>느리게</value>
   </data>
   <data name="AuraStatic" xml:space="preserve">
-    <value>Static</value>
+    <value>정적</value>
   </data>
   <data name="AuraStrobe" xml:space="preserve">
-    <value>Strobe</value>
+    <value>섬광</value>
+  </data>
+  <data name="AuraZoneAll" xml:space="preserve">
+    <value>전체</value>
+  </data>
+  <data name="AuraZoneDock" xml:space="preserve">
+    <value>독</value>
+  </data>
+  <data name="AuraZoneLogo" xml:space="preserve">
+    <value>로고</value>
+  </data>
+  <data name="AuraZoneScroll" xml:space="preserve">
+    <value>스크롤 휠</value>
+  </data>
+  <data name="AuraZoneUnderglow" xml:space="preserve">
+    <value>하단 조명</value>
+  </data>
+  <data name="AutoApply" xml:space="preserve">
+    <value>자동 적용</value>
   </data>
   <data name="AutoMode" xml:space="preserve">
     <value>자동</value>
@@ -190,25 +247,61 @@
     <value>배터리 사용 중에만 60Hz 설정</value>
   </data>
   <data name="Awake" xml:space="preserve">
-    <value>Awake</value>
+    <value>활성</value>
+  </data>
+  <data name="BacklightLow" xml:space="preserve">
+    <value>낮음</value>
+  </data>
+  <data name="BacklightMax" xml:space="preserve">
+    <value>최대</value>
+  </data>
+  <data name="BacklightMid" xml:space="preserve">
+    <value>중간</value>
+  </data>
+  <data name="BacklightOff" xml:space="preserve">
+    <value>꺼짐</value>
   </data>
   <data name="BacklightTimeout" xml:space="preserve">
+    <value>전원 / 배터리 사용 중 자동 꺼짐 시간 (0 - 항상 켜짐)</value>
+  </data>
+  <data name="BacklightTimeoutBattery" xml:space="preserve">
     <value>배터리 사용 중 백라이트 자동 꺼짐</value>
   </data>
   <data name="BacklightTimeoutPlugged" xml:space="preserve">
-    <value>전원 연결 시 백라이트 자동 꺼짐 (0 - 항상 켜짐)</value>
+    <value>전원 사용 중 백라이트 자동 꺼짐</value>
   </data>
   <data name="Balanced" xml:space="preserve">
     <value>균형</value>
   </data>
+  <data name="BatteryCharge" xml:space="preserve">
+    <value>잔량</value>
+  </data>
   <data name="BatteryChargeLimit" xml:space="preserve">
     <value>배터리 충전 제한</value>
+  </data>
+  <data name="BatteryHealth" xml:space="preserve">
+    <value>배터리 수명</value>
+  </data>
+  <data name="BatteryLimitFull" xml:space="preserve">
+    <value>이번만 100%까지 충전</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Binding</value>
+  </data>
+  <data name="BindingPrimary" xml:space="preserve">
+    <value>Primary</value>
+  </data>
+  <data name="BindingSecondary" xml:space="preserve">
+    <value>Secondary</value>
   </data>
   <data name="BiosAndDriverUpdates" xml:space="preserve">
     <value>바이오스/드라이버 업데이트</value>
   </data>
   <data name="Boot" xml:space="preserve">
-    <value>Boot</value>
+    <value>부팅</value>
+  </data>
+  <data name="BootSound" xml:space="preserve">
+    <value>부팅 사운드</value>
   </data>
   <data name="Brightness" xml:space="preserve">
     <value>밝기</value>
@@ -219,8 +312,23 @@
   <data name="BrightnessUp" xml:space="preserve">
     <value>밝기 증가</value>
   </data>
+  <data name="BWTrayIcon" xml:space="preserve">
+    <value>흑백 트레이 아이콘</value>
+  </data>
+  <data name="Calibrate" xml:space="preserve">
+    <value>보정</value>
+  </data>
+  <data name="Charging" xml:space="preserve">
+    <value>충전 중</value>
+  </data>
   <data name="Color" xml:space="preserve">
     <value>색상</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>대비</value>
+  </data>
+  <data name="Controller" xml:space="preserve">
+    <value>컨트롤러</value>
   </data>
   <data name="CPUBoost" xml:space="preserve">
     <value>CPU 부스트</value>
@@ -228,8 +336,17 @@
   <data name="Custom" xml:space="preserve">
     <value>사용자 설정</value>
   </data>
+  <data name="Deceleration" xml:space="preserve">
+    <value>감속</value>
+  </data>
   <data name="Default" xml:space="preserve">
     <value>기본</value>
+  </data>
+  <data name="DisableController" xml:space="preserve">
+    <value>컨트롤러 비활성화</value>
+  </data>
+  <data name="DisableOnLidClose" xml:space="preserve">
+    <value>덮개를 닫을 시 비활성화</value>
   </data>
   <data name="DisableOverdrive" xml:space="preserve">
     <value>화면 OD 끄기</value>
@@ -237,8 +354,11 @@
   <data name="Discharging" xml:space="preserve">
     <value>방전 중</value>
   </data>
+  <data name="DownloadColorProfiles" xml:space="preserve">
+    <value>색 프로필 다운로드</value>
+  </data>
   <data name="DownloadUpdate" xml:space="preserve">
-    <value>업데이트 다운로드</value>
+    <value>다운로드</value>
   </data>
   <data name="DriverAndSoftware" xml:space="preserve">
     <value>드라이버와 소프트웨어</value>
@@ -248,6 +368,23 @@
   </data>
   <data name="EcoMode" xml:space="preserve">
     <value>Eco</value>
+  </data>
+  <data name="EnableGPUOnShutdown" xml:space="preserve">
+    <value>Enable GPU on shutdown (prevents issue with Eco mode)</value>
+  </data>
+  <data name="EnableOptimusText" xml:space="preserve">
+    <value>NVIDIA 디스플레이 모드가 Optimus로 설정되어 있지 않을 때 Eco 모드로 전환하여 dGPU를 비활성화하면 다시 시작하기 전까지 밝기 조절 문제가 생길 수 있습니다.
+
+계속하시겠습니까?</value>
+  </data>
+  <data name="EnableOptimusTitle" xml:space="preserve">
+    <value>NVIDIA 디스플레이 모드가 Optimus로 설정되어 있지 않습니다.</value>
+  </data>
+  <data name="EnergySettings" xml:space="preserve">
+    <value>Energy Settings</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>프로필 내보내기</value>
   </data>
   <data name="Extra" xml:space="preserve">
     <value>추가 설정</value>
@@ -277,19 +414,28 @@
     <value>팬 속도/전력</value>
   </data>
   <data name="FanSpeed" xml:space="preserve">
-    <value>팬: </value>
+    <value>팬</value>
   </data>
   <data name="FansPower" xml:space="preserve">
     <value>팬 + 전력</value>
   </data>
+  <data name="FlickerFreeDimming" xml:space="preserve">
+    <value>Flicker-free Dimming</value>
+  </data>
   <data name="FnLock" xml:space="preserve">
     <value>Fn 키를 누르지 않고 Fn+F 핫키 작동</value>
+  </data>
+  <data name="FnLockOff" xml:space="preserve">
+    <value>FN-Lock 꺼짐</value>
+  </data>
+  <data name="FnLockOn" xml:space="preserve">
+    <value>FN-Lock 켜짐</value>
   </data>
   <data name="GPUBoost" xml:space="preserve">
     <value>다이나믹 부스트</value>
   </data>
   <data name="GPUChanging" xml:space="preserve">
-    <value>충전 중</value>
+    <value>바꾸는 중</value>
   </data>
   <data name="GPUCoreClockOffset" xml:space="preserve">
     <value>코어 클럭 오프셋</value>
@@ -309,20 +455,32 @@
   <data name="GPUModeUltimate" xml:space="preserve">
     <value>dGPU만 사용</value>
   </data>
+  <data name="GPUPower" xml:space="preserve">
+    <value>GPU Power</value>
+  </data>
   <data name="GPUSettings" xml:space="preserve">
     <value>GPU 설정</value>
   </data>
   <data name="GPUTempTarget" xml:space="preserve">
     <value>목표 온도</value>
   </data>
+  <data name="HibernateAfter" xml:space="preserve">
+    <value>최대 절전 모드 전환 시간 (0 - 꺼짐)</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>높게</value>
+  </data>
+  <data name="ImageRotation" xml:space="preserve">
+    <value>이미지 방향</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>프로필 가져오기</value>
+  </data>
   <data name="KeyBindings" xml:space="preserve">
     <value>키 설정</value>
   </data>
   <data name="Keyboard" xml:space="preserve">
     <value>키보드</value>
-  </data>
-  <data name="KeyboardAuto" xml:space="preserve">
-    <value>배터리 사용 중에만 백라이트 밝기 낮추기</value>
   </data>
   <data name="KillGpuApps" xml:space="preserve">
     <value>Eco 모드로 전환 시 GPU를 사용하는 모든 앱 중지</value>
@@ -336,14 +494,32 @@
   <data name="LaptopScreen" xml:space="preserve">
     <value>화면</value>
   </data>
+  <data name="LEDStatusIndicators" xml:space="preserve">
+    <value>LED 상태 표시등</value>
+  </data>
   <data name="Lid" xml:space="preserve">
     <value>덮개</value>
   </data>
   <data name="Lightbar" xml:space="preserve">
     <value>라이트바</value>
   </data>
+  <data name="Lighting" xml:space="preserve">
+    <value>조명</value>
+  </data>
+  <data name="LockScreen" xml:space="preserve">
+    <value>잠금화면</value>
+  </data>
   <data name="Logo" xml:space="preserve">
     <value>로고</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>낮게</value>
+  </data>
+  <data name="LSDeadzones" xml:space="preserve">
+    <value>왼쪽 스틱 데드존</value>
+  </data>
+  <data name="LTDeadzones" xml:space="preserve">
+    <value>왼쪽 트리거 데드존</value>
   </data>
   <data name="MatrixAudio" xml:space="preserve">
     <value>오디오 비주얼라이저</value>
@@ -378,11 +554,68 @@
   <data name="MinRefreshTooltip" xml:space="preserve">
     <value>60Hz 주사율 설정</value>
   </data>
+  <data name="Minute" xml:space="preserve">
+    <value>분 후</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>분 후</value>
+  </data>
+  <data name="MouseAngleSnapping" xml:space="preserve">
+    <value>직선 보정</value>
+  </data>
+  <data name="MouseAutoPowerOff" xml:space="preserve">
+    <value>자동 전원 꺼짐</value>
+  </data>
+  <data name="MouseButtonResponse" xml:space="preserve">
+    <value>버튼 응답</value>
+  </data>
+  <data name="MouseImportFailed" xml:space="preserve">
+    <value>Import failed. Selected file is not a valid mouse profile or corrutpted.</value>
+  </data>
+  <data name="MouseLiftOffDistance" xml:space="preserve">
+    <value>들어올림 거리</value>
+  </data>
+  <data name="MouseLowBatteryWarning" xml:space="preserve">
+    <value>배터리 부족 경고 알림</value>
+  </data>
+  <data name="MousePerformance" xml:space="preserve">
+    <value>성능</value>
+  </data>
+  <data name="MouseSynchronize" xml:space="preserve">
+    <value>마우스와 동기화</value>
+  </data>
   <data name="Multizone" xml:space="preserve">
-    <value>멀티존</value>
+    <value>Multi Zone</value>
+  </data>
+  <data name="MultizoneStrong" xml:space="preserve">
+    <value>Multi Zone Strong</value>
+  </data>
+  <data name="Muted" xml:space="preserve">
+    <value>음소거</value>
   </data>
   <data name="MuteMic" xml:space="preserve">
     <value>마이크 음소거</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>사용 안함</value>
+  </data>
+  <data name="NewUpdates" xml:space="preserve">
+    <value>새 업데이트</value>
+  </data>
+  <data name="NoNewUpdates" xml:space="preserve">
+    <value>새 업데이트 없음</value>
+  </data>
+  <data name="NotConnected" xml:space="preserve">
+    <value>연결되지 않음</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>꺼짐</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>켜짐</value>
+  </data>
+  <data name="OneZone" xml:space="preserve">
+    <value>One Zone</value>
   </data>
   <data name="OpenGHelper" xml:space="preserve">
     <value>G-Helper 열기</value>
@@ -405,23 +638,35 @@
   <data name="PerformanceMode" xml:space="preserve">
     <value>성능 모드</value>
   </data>
+  <data name="Peripherals" xml:space="preserve">
+    <value>주변 장치</value>
+  </data>
   <data name="PictureGif" xml:space="preserve">
     <value>사진 / Gif</value>
   </data>
   <data name="PlayPause" xml:space="preserve">
     <value>재생 / 정지</value>
   </data>
+  <data name="PollingRate" xml:space="preserve">
+    <value>폴링레이트</value>
+  </data>
   <data name="PowerLimits" xml:space="preserve">
     <value>전력 제한</value>
   </data>
   <data name="PPTExperimental" xml:space="preserve">
-    <value>전력 제한 은 실험적인 기능입니다. 주의하여 사용하세요!</value>
+    <value>전력 제한은 실험적인 기능입니다. 주의하여 사용하세요!</value>
   </data>
   <data name="PrintScreen" xml:space="preserve">
     <value>PrintScreen</value>
   </data>
+  <data name="Profile" xml:space="preserve">
+    <value>프로필</value>
+  </data>
   <data name="Quit" xml:space="preserve">
     <value>종료</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>초기화</value>
   </data>
   <data name="RestartGPU" xml:space="preserve">
     <value>dGPU가 사용중이기 때문에 Eco 모드로 전환할 수 없습니다. 장치 관리자에서 dGPU를 재시작하시겠습니까?</value>
@@ -429,17 +674,32 @@
   <data name="RPM" xml:space="preserve">
     <value>RPM</value>
   </data>
+  <data name="RSDeadzones" xml:space="preserve">
+    <value>오른쪽 스틱 데드존</value>
+  </data>
+  <data name="RTDeadzones" xml:space="preserve">
+    <value>오른쪽 트리거 데드존</value>
+  </data>
   <data name="RunOnStartup" xml:space="preserve">
     <value>시스템 시작 시 실행</value>
   </data>
+  <data name="ScalingQuality" xml:space="preserve">
+    <value>Scaling Quality</value>
+  </data>
+  <data name="ScreenPadDown" xml:space="preserve">
+    <value>Screenpad 밝기 감소</value>
+  </data>
+  <data name="ScreenPadUp" xml:space="preserve">
+    <value>Screenpad 밝기 증가</value>
+  </data>
   <data name="Shutdown" xml:space="preserve">
-    <value>꺼짐</value>
+    <value>종료</value>
   </data>
   <data name="Silent" xml:space="preserve">
     <value>조용</value>
   </data>
   <data name="Sleep" xml:space="preserve">
-    <value>Sleep</value>
+    <value>절전</value>
   </data>
   <data name="StandardGPUTooltip" xml:space="preserve">
     <value>Standard 모드에서 dGPU 켜기</value>
@@ -459,20 +719,32 @@
   <data name="Stop" xml:space="preserve">
     <value>중지</value>
   </data>
+  <data name="StopGPUApps" xml:space="preserve">
+    <value>GPU를 사용하는 앱 중지</value>
+  </data>
   <data name="StoppingServices" xml:space="preserve">
     <value>서비스 중지 중</value>
   </data>
   <data name="ToggleAura" xml:space="preserve">
-    <value>Aura 토글 키</value>
+    <value>Aura 전환 키</value>
+  </data>
+  <data name="ToggleClamshellMode" xml:space="preserve">
+    <value>클램쉘 모드 자동 전환</value>
   </data>
   <data name="ToggleFnLock" xml:space="preserve">
-    <value>Fn-Lock 토글 키</value>
+    <value>Fn-Lock 전환 키</value>
   </data>
   <data name="ToggleMiniled" xml:space="preserve">
-    <value>Miniled 토글 키 (지원하는 기기만)</value>
+    <value>Miniled 전환 키 (지원하는 기기만)</value>
   </data>
   <data name="ToggleScreen" xml:space="preserve">
-    <value>화면 토글 키</value>
+    <value>화면 전환 키</value>
+  </data>
+  <data name="ToggleTouchscreen" xml:space="preserve">
+    <value>Toggle Touchscreen</value>
+  </data>
+  <data name="Touchscreen" xml:space="preserve">
+    <value/>
   </data>
   <data name="Turbo" xml:space="preserve">
     <value>터보</value>
@@ -489,11 +761,29 @@
   <data name="UltimateMode" xml:space="preserve">
     <value>Ultimate</value>
   </data>
+  <data name="UndervoltingRisky" xml:space="preserve">
+    <value>언더볼팅은 실험적이며 위험한 기능입니다. 적용 값이 너무 낮은 경우 시스템이 불안정해지고, 강제 종료되거나 데이터 손상을 유발할 수 있습니다. 낮은 값부터 적용하여 잘 작동하는지 확인해 보십시오.</value>
+  </data>
+  <data name="Unmuted" xml:space="preserve">
+    <value>음소거 해제</value>
+  </data>
   <data name="Updates" xml:space="preserve">
     <value>업데이트</value>
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>버전</value>
+  </data>
+  <data name="VibrationStrength" xml:space="preserve">
+    <value>진동 세기</value>
+  </data>
+  <data name="VisualMode" xml:space="preserve">
+    <value>비주얼 모드</value>
+  </data>
+  <data name="VisualModesHDR" xml:space="preserve">
+    <value>HDR이 켜져 있을 때에는 비주얼 모드를 사용할 수 없습니다.</value>
+  </data>
+  <data name="VisualModesScreen" xml:space="preserve">
+    <value>노트북의 화면이 꺼져 있을 때에는 비주얼 모드를 사용할 수 없습니다.</value>
   </data>
   <data name="VolumeDown" xml:space="preserve">
     <value>볼륨 작게</value>
@@ -506,5 +796,8 @@
   </data>
   <data name="WindowTop" xml:space="preserve">
     <value>창을 항상 맨 위로 유지</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>확대/축소</value>
   </data>
 </root>

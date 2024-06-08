@@ -1,7 +1,11 @@
-﻿using CustomControls;
-using GHelper.Gpu;
+﻿using GHelper.Fan;
+using GHelper.Gpu.NVidia;
+using GHelper.Mode;
+using GHelper.UI;
+using GHelper.USB;
 using Ryzen;
 using System.Diagnostics;
+using System.Management;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GHelper
@@ -10,25 +14,32 @@ namespace GHelper
     {
 
         int curIndex = -1;
-        DataPoint curPoint = null;
+        DataPoint? curPoint = null;
 
         Series seriesCPU;
         Series seriesGPU;
         Series seriesMid;
         Series seriesXGM;
 
-        static int MinRPM, MaxRPM;
-
         static bool gpuVisible = true;
+        static bool fanRpm = true;
 
         const int fansMax = 100;
 
         NvidiaGpuControl? nvControl = null;
+        ModeControl modeControl = Program.modeControl;
+
+        FanSensorControl fanSensorControl;
+
+        static int gpuPowerBase = 0;
+        static bool isGPUPower => gpuPowerBase > 0;
 
         public Fans()
         {
 
             InitializeComponent();
+
+            fanSensorControl = new FanSensorControl(this);
 
             //float dpi = ControlHelper.GetDpiScale(this).Value;
             //comboModes.Size = new Size(comboModes.Width, (int)dpi * 18);
@@ -38,7 +49,7 @@ namespace GHelper
             labelPowerLimits.Text = Properties.Strings.PowerLimits;
             checkApplyPower.Text = Properties.Strings.ApplyPowerLimits;
 
-            labelFans.Text = Properties.Strings.FanCurves;
+            labelFans.Text = "BIOS " + Properties.Strings.FanCurves;
             labelBoost.Text = Properties.Strings.CPUBoost;
             buttonReset.Text = Properties.Strings.FactoryDefaults;
             checkApplyFans.Text = Properties.Strings.ApplyFanCurve;
@@ -49,17 +60,18 @@ namespace GHelper
             labelGPUMemoryTitle.Text = Properties.Strings.GPUMemoryClockOffset;
             labelGPUBoostTitle.Text = Properties.Strings.GPUBoost;
             labelGPUTempTitle.Text = Properties.Strings.GPUTempTarget;
+            labelGPUPowerTitle.Text = Properties.Strings.GPUPower;
 
             labelRisky.Text = Properties.Strings.UndervoltingRisky;
+            buttonApplyAdvanced.Text = Properties.Strings.Apply;
+            checkApplyUV.Text = Properties.Strings.AutoApply;
+
+            buttonCalibrate.Text = Properties.Strings.Calibrate;
 
             InitTheme(true);
 
-            MinRPM = 18;
-            MaxRPM = HardwareControl.GetFanMax();
             labelTip.Visible = false;
             labelTip.BackColor = Color.Transparent;
-
-            FormClosing += Fans_FormClosing;
 
             seriesCPU = chartCPU.Series.Add("CPU");
             seriesGPU = chartGPU.Series.Add("GPU");
@@ -71,39 +83,61 @@ namespace GHelper
             seriesMid.Color = colorEco;
             seriesXGM.Color = Color.Orange;
 
-            chartCPU.MouseMove += ChartCPU_MouseMove;
+            chartCPU.MouseMove += (sender, e) => ChartCPU_MouseMove(sender, e, AsusFan.CPU);
             chartCPU.MouseUp += ChartCPU_MouseUp;
+            chartCPU.MouseLeave += ChartCPU_MouseLeave;
 
-            chartGPU.MouseMove += ChartCPU_MouseMove;
+            chartGPU.MouseMove += (sender, e) => ChartCPU_MouseMove(sender, e, AsusFan.GPU);
             chartGPU.MouseUp += ChartCPU_MouseUp;
+            chartGPU.MouseLeave += ChartCPU_MouseLeave;
 
-            chartMid.MouseMove += ChartCPU_MouseMove;
+            chartMid.MouseMove += (sender, e) => ChartCPU_MouseMove(sender, e, AsusFan.Mid);
             chartMid.MouseUp += ChartCPU_MouseUp;
+            chartMid.MouseLeave += ChartCPU_MouseLeave;
 
-            chartXGM.MouseMove += ChartCPU_MouseMove;
+            chartXGM.MouseMove += (sender, e) => ChartCPU_MouseMove(sender, e, AsusFan.XGM);
             chartXGM.MouseUp += ChartCPU_MouseUp;
+            chartXGM.MouseLeave += ChartCPU_MouseLeave;
+
+            chartCPU.MouseClick += ChartCPU_MouseClick;
+            chartGPU.MouseClick += ChartCPU_MouseClick;
+            chartMid.MouseClick += ChartCPU_MouseClick;
+            chartXGM.MouseClick += ChartCPU_MouseClick;
 
             buttonReset.Click += ButtonReset_Click;
 
-            trackA0.Maximum = AsusACPI.MaxTotal;
-            trackA0.Minimum = AsusACPI.MinTotal;
+            trackTotal.Maximum = AsusACPI.MaxTotal;
+            trackTotal.Minimum = AsusACPI.MinTotal;
 
-            trackB0.Maximum = AsusACPI.MaxCPU;
-            trackB0.Minimum = AsusACPI.MinCPU;
+            trackSlow.Maximum = AsusACPI.MaxTotal;
+            trackSlow.Minimum = AsusACPI.MinTotal;
 
-            trackC1.Maximum = AsusACPI.MaxTotal;
-            trackC1.Minimum = AsusACPI.MinTotal;
+            trackCPU.Maximum = AsusACPI.MaxCPU;
+            trackCPU.Minimum = AsusACPI.MinCPU;
 
-            trackC1.Scroll += TrackPower_Scroll;
-            trackB0.Scroll += TrackPower_Scroll;
-            trackA0.Scroll += TrackPower_Scroll;
+            trackFast.Maximum = AsusACPI.MaxTotal;
+            trackFast.Minimum = AsusACPI.MinTotal;
 
-            trackC1.MouseUp += TrackPower_MouseUp;
-            trackB0.MouseUp += TrackPower_MouseUp;
-            trackA0.MouseUp += TrackPower_MouseUp;
+            trackTotal.Scroll += TrackTotal_Scroll;
+            trackSlow.Scroll += TrackSlow_Scroll;
+            trackFast.Scroll += TrackFast_Scroll;
+            trackCPU.Scroll += TrackCPU_Scroll;
+
+            trackFast.MouseUp += TrackPower_MouseUp;
+            trackCPU.MouseUp += TrackPower_MouseUp;
+            trackTotal.MouseUp += TrackPower_MouseUp;
+            trackSlow.MouseUp += TrackPower_MouseUp;
+
+            trackFast.KeyUp += TrackPower_KeyUp;
+            trackCPU.KeyUp += TrackPower_KeyUp;
+            trackTotal.KeyUp += TrackPower_KeyUp;
+            trackSlow.KeyUp += TrackPower_KeyUp;
 
             checkApplyFans.Click += CheckApplyFans_Click;
             checkApplyPower.Click += CheckApplyPower_Click;
+
+            trackGPUClockLimit.Minimum = NvidiaGpuControl.MinClockLimit;
+            trackGPUClockLimit.Maximum = NvidiaGpuControl.MaxClockLimit;
 
             trackGPUCore.Minimum = NvidiaGpuControl.MinCoreOffset;
             trackGPUCore.Maximum = NvidiaGpuControl.MaxCoreOffset;
@@ -117,16 +151,25 @@ namespace GHelper
             trackGPUTemp.Minimum = AsusACPI.MinGPUTemp;
             trackGPUTemp.Maximum = AsusACPI.MaxGPUTemp;
 
+            trackGPUPower.Minimum = AsusACPI.MinGPUPower;
+            trackGPUPower.Maximum = AsusACPI.MaxGPUPower;
+
+            trackGPUClockLimit.Scroll += trackGPUClockLimit_Scroll;
             trackGPUCore.Scroll += trackGPU_Scroll;
             trackGPUMemory.Scroll += trackGPU_Scroll;
 
             trackGPUBoost.Scroll += trackGPUPower_Scroll;
             trackGPUTemp.Scroll += trackGPUPower_Scroll;
+            trackGPUPower.Scroll += trackGPUPower_Scroll;
 
-            trackGPUCore.MouseUp += TrackGPU_MouseUp;
-            trackGPUMemory.MouseUp += TrackGPU_MouseUp;
+            trackGPUCore.MouseUp += TrackGPUClocks_MouseUp;
+            trackGPUMemory.MouseUp += TrackGPUClocks_MouseUp;
+            trackGPUClockLimit.MouseUp += TrackGPUClocks_MouseUp;
+
             trackGPUBoost.MouseUp += TrackGPU_MouseUp;
             trackGPUTemp.MouseUp += TrackGPU_MouseUp;
+            trackGPUPower.MouseUp += TrackGPU_MouseUp;
+
 
             //labelInfo.MaximumSize = new Size(280, 0);
             labelFansResult.Visible = false;
@@ -141,11 +184,18 @@ namespace GHelper
             trackTemp.Minimum = RyzenControl.MinTemp;
             trackTemp.Maximum = RyzenControl.MaxTemp;
 
+            comboPowerMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboPowerMode.DataSource = new BindingSource(PowerNative.powerModes, null);
+            comboPowerMode.DisplayMember = "Value";
+            comboPowerMode.ValueMember = "Key";
 
             FillModes();
             InitAll();
+            InitCPU();
 
             comboBoost.SelectedValueChanged += ComboBoost_Changed;
+            comboPowerMode.SelectedValueChanged += ComboPowerMode_Changed;
+
 
             comboModes.SelectionChangeCommitted += ComboModes_SelectedValueChanged;
             comboModes.TextChanged += ComboModes_TextChanged;
@@ -174,13 +224,69 @@ namespace GHelper
 
             checkApplyUV.Click += CheckApplyUV_Click;
 
+            buttonCalibrate.Click += ButtonCalibrate_Click;
+
+            buttonDownload.Click += ButtonDownload_Click;
+
             ToggleNavigation(0);
 
+            if (Program.acpi.DeviceGet(AsusACPI.DevsCPUFanCurve) < 0) buttonCalibrate.Visible = false;
+
+            FormClosed += Fans_FormClosed;
+
+        }
+
+
+        private void ButtonDownload_Click(object? sender, EventArgs e)
+        {
+            RyzenControl.DownloadRing();
+
+            panelAdvancedAlways.Visible = true;
+            panelAdvancedApply.Visible = true;
+            labelRisky.Visible = true;
+            panelUViGPU.Visible = true;
+            panelUV.Visible = true;
+            panelTitleAdvanced.Visible = true;
+            panelTemperature.Visible = true;
+            panelTitleTemp.Visible = true;
+
+            VisualiseAdvanced();
+        }
+
+        private void ButtonCalibrate_Click(object? sender, EventArgs e)
+        {
+            buttonCalibrate.Enabled = false;
+            fanSensorControl.StartCalibration();
+        }
+
+        private void ChartCPU_MouseClick(object? sender, MouseEventArgs e)
+        {
+            if (sender is null) return;
+            Chart chart = (Chart)sender;
+
+            HitTestResult result = chart.HitTest(e.X, e.Y);
+
+            if ((result.ChartElementType == ChartElementType.AxisLabels || result.ChartElementType == ChartElementType.Axis) && result.Axis == chart.ChartAreas[0].AxisY)
+            {
+                fanRpm = !fanRpm;
+                SetAxis(chartCPU, AsusFan.CPU);
+                SetAxis(chartGPU, AsusFan.GPU);
+                if (chartMid.Visible) SetAxis(chartMid, AsusFan.Mid);
+                if (chartXGM.Visible) SetAxis(chartXGM, AsusFan.XGM);
+            }
+
+        }
+
+        private void Fans_FormClosed(object? sender, FormClosedEventArgs e)
+        {
+            //Because windows charts seem to eat a lot of memory :(
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
         }
 
         private void CheckApplyUV_Click(object? sender, EventArgs e)
         {
             AppConfig.SetMode("auto_uv", checkApplyUV.Checked ? 1 : 0);
+            modeControl.AutoRyzen();
         }
 
         public void InitAll()
@@ -188,9 +294,26 @@ namespace GHelper
             InitMode();
             InitFans();
             InitPower();
-            InitBoost();
+            InitPowerPlan();
             InitUV();
             InitGPU();
+        }
+
+        public void InitCPU()
+        {
+            Task.Run(async () =>
+            {
+                string CPUName;
+                using (ManagementObjectSearcher myProcessorObject = new ManagementObjectSearcher("select * from Win32_Processor"))
+                    foreach (ManagementObject obj in myProcessorObject.Get())
+                    {
+                        CPUName = obj["Name"].ToString();
+                        Invoke(delegate
+                        {
+                            Text = Properties.Strings.FansAndPower + " - " + CPUName;
+                        });
+                    }
+            });
         }
 
         public void ToggleNavigation(int index = 0)
@@ -243,7 +366,7 @@ namespace GHelper
 
         private void ButtonApplyAdvanced_Click(object? sender, EventArgs e)
         {
-            Program.settingsForm.SetUV(true);
+            modeControl.SetRyzen(true);
             checkApplyUV.Enabled = true;
         }
 
@@ -256,22 +379,57 @@ namespace GHelper
             int igpuUV = Math.Max(trackUViGPU.Minimum, Math.Min(trackUViGPU.Maximum, AppConfig.GetMode("igpu_uv", 0)));
 
             int temp = AppConfig.GetMode("cpu_temp");
-            if (temp < trackTemp.Minimum || temp > trackTemp.Maximum) temp = 96;
+            if (temp < RyzenControl.MinTemp || temp > RyzenControl.MaxTemp) temp = RyzenControl.MaxTemp;
 
             checkApplyUV.Enabled = checkApplyUV.Checked = AppConfig.IsMode("auto_uv");
 
             trackUV.Value = cpuUV;
-            labelUV.Text = trackUV.Value.ToString();
-
             trackUViGPU.Value = igpuUV;
-            labelUViGPU.Text = trackUViGPU.Value.ToString();
-
             trackTemp.Value = temp;
-            labelTemp.Text = trackTemp.Value.ToString() + "°C";
 
+            VisualiseAdvanced();
 
             buttonAdvanced.Visible = RyzenControl.IsAMD();
 
+        }
+
+        private void VisualiseAdvanced()
+        {
+
+            if (!RyzenControl.IsRingExsists())
+            {
+                panelTitleAdvanced.Visible = false;
+                labelRisky.Visible = false;
+                panelUV.Visible = false;
+                panelUViGPU.Visible = false;
+                panelTitleTemp.Visible = false;
+                panelTemperature.Visible = false;
+                panelAdvancedAlways.Visible = false;
+                panelAdvancedApply.Visible = false;
+                panelDownload.Visible = true;
+
+            } else
+            {
+                panelDownload.Visible = false;
+            }
+
+            if (!RyzenControl.IsSupportedUV())
+            {
+                panelTitleAdvanced.Visible = false;
+                labelRisky.Visible = false;
+                panelUV.Visible = false;
+                panelUViGPU.Visible = false;
+            }
+
+            if (!RyzenControl.IsSupportedUViGPU())
+            {
+                panelUViGPU.Visible = false;
+            }
+
+            labelUV.Text = trackUV.Value.ToString();
+            labelUViGPU.Text = trackUViGPU.Value.ToString();
+
+            labelTemp.Text = (trackTemp.Value < RyzenControl.MaxTemp) ? trackTemp.Value.ToString() + "°C" : "Default";
         }
 
         private void AdvancedScroll()
@@ -279,9 +437,7 @@ namespace GHelper
             AppConfig.SetMode("auto_uv", 0);
             checkApplyUV.Enabled = checkApplyUV.Checked = false;
 
-            labelUV.Text = trackUV.Value.ToString();
-            labelUViGPU.Text = trackUViGPU.Value.ToString();
-            labelTemp.Text = trackTemp.Value.ToString() + "°C";
+            VisualiseAdvanced();
 
             AppConfig.SetMode("cpu_temp", trackTemp.Value);
             AppConfig.SetMode("cpu_uv", trackUV.Value);
@@ -331,7 +487,7 @@ namespace GHelper
             Modes.Remove(mode);
             FillModes();
 
-            Program.settingsForm.SetPerformanceMode(AsusACPI.PerformanceBalanced);
+            modeControl.SetPerformanceMode(AsusACPI.PerformanceBalanced);
 
         }
 
@@ -347,7 +503,7 @@ namespace GHelper
         {
             int mode = Modes.Add();
             FillModes();
-            Program.settingsForm.SetPerformanceMode(mode);
+            modeControl.SetPerformanceMode(mode);
         }
 
         public void InitMode()
@@ -366,13 +522,50 @@ namespace GHelper
 
             Debug.WriteLine(selectedMode);
 
-            Program.settingsForm.SetPerformanceMode((int)selectedMode);
+            modeControl.SetPerformanceMode((int)selectedMode);
         }
 
         private void TrackGPU_MouseUp(object? sender, MouseEventArgs e)
         {
-            Program.settingsForm.SetGPUPower();
-            Program.settingsForm.SetGPUClocks(true);
+            modeControl.SetGPUPower();
+        }
+
+        private void TrackGPUClocks_MouseUp(object? sender, MouseEventArgs e)
+        {
+            modeControl.SetGPUClocks(true);
+        }
+
+        private void InitGPUPower()
+        {
+            gpuPowerBase = Program.acpi.DeviceGet(AsusACPI.GPU_BASE);
+            if (gpuPowerBase >= 0) Logger.WriteLine($"ReadGPUPowerBase: {gpuPowerBase}");
+
+            panelGPUPower.Visible = isGPUPower;
+            if (!isGPUPower) return;
+
+            int maxGPUPower = NvidiaSmi.GetMaxGPUPower();
+            if (maxGPUPower > 0)
+            {
+                AsusACPI.MaxGPUPower = maxGPUPower - gpuPowerBase - AsusACPI.MaxGPUBoost;
+                trackGPUPower.Minimum = AsusACPI.MinGPUPower;
+                trackGPUPower.Maximum = AsusACPI.MaxGPUPower;
+            }
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(200));
+                int gpuPowerVar = Program.acpi.DeviceGet(AsusACPI.GPU_POWER);
+                Logger.WriteLine($"ReadGPUPower ({Modes.GetCurrentBase()}): {gpuPowerVar}");
+
+                int gpu_power = AppConfig.GetMode("gpu_power");
+                if (gpu_power < 0) gpu_power = (gpuPowerVar >= 0) ? gpuPowerVar : AsusACPI.MaxGPUPower;
+
+                Invoke(delegate
+                {
+                    trackGPUPower.Value = Math.Max(Math.Min(gpu_power, AsusACPI.MaxGPUPower), AsusACPI.MinGPUPower);
+                    VisualiseGPUSettings();
+                });
+            });
         }
 
         public void InitGPU()
@@ -384,7 +577,7 @@ namespace GHelper
                 return;
             }
 
-            if (HardwareControl.GpuControl is null) HardwareControl.RecreateGpuControl();
+            if (HardwareControl.GpuControl is null || !HardwareControl.GpuControl.IsValid) HardwareControl.RecreateGpuControl();
 
             if (HardwareControl.GpuControl is not null && HardwareControl.GpuControl.IsNvidia)
             {
@@ -402,34 +595,42 @@ namespace GHelper
 
                 int gpu_boost = AppConfig.GetMode("gpu_boost");
                 int gpu_temp = AppConfig.GetMode("gpu_temp");
+
                 int core = AppConfig.GetMode("gpu_core");
                 int memory = AppConfig.GetMode("gpu_memory");
+                int clock_limit = AppConfig.GetMode("gpu_clock_limit");
 
                 if (gpu_boost < 0) gpu_boost = AsusACPI.MaxGPUBoost;
                 if (gpu_temp < 0) gpu_temp = AsusACPI.MaxGPUTemp;
 
                 if (core == -1) core = 0;
                 if (memory == -1) memory = 0;
+                if (clock_limit == -1) clock_limit = NvidiaGpuControl.MaxClockLimit;
 
-                //if (readClocks)
-                //{
-                int status = nvControl.GetClocks(out int current_core, out int current_memory);
-                if (status != -1)
+                if (nvControl is not null)
                 {
-                    core = current_core;
-                    memory = current_memory;
+                    if (nvControl.GetClocks(out int current_core, out int current_memory))
+                    {
+                        core = current_core;
+                        memory = current_memory;
+                    }
+
+                    int _clockLimit = nvControl.GetMaxGPUCLock();
+
+                    if (_clockLimit == 0) clock_limit = NvidiaGpuControl.MaxClockLimit;
+                    else if (_clockLimit > 0) clock_limit = _clockLimit;
+
+                    try
+                    {
+                        labelGPU.Text = nvControl.FullName;
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
-                try
-                {
-                    labelGPU.Text = nvControl.FullName;
-                }
-                catch
-                {
-
-                }
-
-                //}
+                trackGPUClockLimit.Value = Math.Max(Math.Min(clock_limit, NvidiaGpuControl.MaxClockLimit), NvidiaGpuControl.MinClockLimit);
 
                 trackGPUCore.Value = Math.Max(Math.Min(core, NvidiaGpuControl.MaxCoreOffset), NvidiaGpuControl.MinCoreOffset);
                 trackGPUMemory.Value = Math.Max(Math.Min(memory, NvidiaGpuControl.MaxMemoryOffset), NvidiaGpuControl.MinMemoryOffset);
@@ -437,10 +638,13 @@ namespace GHelper
                 trackGPUBoost.Value = Math.Max(Math.Min(gpu_boost, AsusACPI.MaxGPUBoost), AsusACPI.MinGPUBoost);
                 trackGPUTemp.Value = Math.Max(Math.Min(gpu_temp, AsusACPI.MaxGPUTemp), AsusACPI.MinGPUTemp);
 
+
                 panelGPUBoost.Visible = (Program.acpi.DeviceGet(AsusACPI.PPT_GPUC0) >= 0);
                 panelGPUTemp.Visible = (Program.acpi.DeviceGet(AsusACPI.PPT_GPUC2) >= 0);
 
                 VisualiseGPUSettings();
+
+                InitGPUPower();
 
             }
             catch (Exception ex)
@@ -455,8 +659,27 @@ namespace GHelper
         {
             labelGPUCore.Text = $"{trackGPUCore.Value} MHz";
             labelGPUMemory.Text = $"{trackGPUMemory.Value} MHz";
+
             labelGPUBoost.Text = $"{trackGPUBoost.Value}W";
             labelGPUTemp.Text = $"{trackGPUTemp.Value}°C";
+
+            if (trackGPUClockLimit.Value >= NvidiaGpuControl.MaxClockLimit)
+                labelGPUClockLimit.Text = "Default";
+            else
+                labelGPUClockLimit.Text = $"{trackGPUClockLimit.Value} MHz";
+
+            labelGPUPower.Text = (gpuPowerBase + trackGPUPower.Value) + "W";
+
+        }
+
+        private void trackGPUClockLimit_Scroll(object? sender, EventArgs e)
+        {
+
+            int maxClock = (int)Math.Round((float)trackGPUClockLimit.Value / 5) * 5;
+
+            trackGPUClockLimit.Value = maxClock;
+            AppConfig.SetMode("gpu_clock_limit", maxClock);
+            VisualiseGPUSettings();
         }
 
         private void trackGPU_Scroll(object? sender, EventArgs e)
@@ -468,6 +691,7 @@ namespace GHelper
             AppConfig.SetMode("gpu_core", trackGPUCore.Value);
             AppConfig.SetMode("gpu_memory", trackGPUMemory.Value);
 
+
             VisualiseGPUSettings();
 
         }
@@ -477,34 +701,57 @@ namespace GHelper
             AppConfig.SetMode("gpu_boost", trackGPUBoost.Value);
             AppConfig.SetMode("gpu_temp", trackGPUTemp.Value);
 
+            if (isGPUPower) AppConfig.SetMode("gpu_power", trackGPUPower.Value);
+
             VisualiseGPUSettings();
         }
 
-        static string ChartPercToRPM(int percentage, string unit = "")
+        static string ChartYLabel(int percentage, AsusFan device, string unit = "")
         {
             if (percentage == 0) return "OFF";
 
-            return (200 * Math.Round((float)(MinRPM * 100 + (MaxRPM - MinRPM) * percentage) / 200)).ToString() + unit;
+            int Min = FanSensorControl.DEFAULT_FAN_MIN;
+            int Max = FanSensorControl.GetFanMax(device);
+
+            if (fanRpm)
+                return (200 * Math.Floor((float)(Min * 100 + (Max - Min) * percentage) / 200)).ToString() + unit;
+            else
+                return percentage + "%";
+        }
+
+        void SetAxis(Chart chart, AsusFan device)
+        {
+
+            chart.ChartAreas[0].AxisY.CustomLabels.Clear();
+
+            for (int i = 0; i <= fansMax; i += 10)
+            {
+                chart.ChartAreas[0].AxisY.CustomLabels.Add(i - 2, i + 2, ChartYLabel(i, device));
+            }
+
+            //chart.ChartAreas[0].AxisY.CustomLabels.Add(fansMax -2, fansMax + 2, Properties.Strings.RPM);
+            chart.ChartAreas[0].AxisY.Interval = 10;
         }
 
         void SetChart(Chart chart, AsusFan device)
         {
 
             string title = "";
+            string scale = ", RPM/°C";
 
             switch (device)
             {
                 case AsusFan.CPU:
-                    title = Properties.Strings.FanProfileCPU;
+                    title = Properties.Strings.FanProfileCPU + scale;
                     break;
                 case AsusFan.GPU:
-                    title = Properties.Strings.FanProfileGPU;
+                    title = Properties.Strings.FanProfileGPU + scale;
                     break;
                 case AsusFan.Mid:
-                    title = Properties.Strings.FanProfileMid;
+                    title = Properties.Strings.FanProfileMid + scale;
                     break;
                 case AsusFan.XGM:
-                    title = "XG Mobile";
+                    title = "XG Mobile" + scale;
                     break;
             }
 
@@ -524,12 +771,7 @@ namespace GHelper
             chart.ChartAreas[0].AxisX.LineColor = chartGrid;
             chart.ChartAreas[0].AxisY.LineColor = chartGrid;
 
-            for (int i = 0; i <= fansMax - 10; i += 10)
-                chart.ChartAreas[0].AxisY.CustomLabels.Add(i - 2, i + 2, ChartPercToRPM(i));
-
-            chart.ChartAreas[0].AxisY.CustomLabels.Add(fansMax - 2, fansMax + 2, Properties.Strings.RPM);
-
-            chart.ChartAreas[0].AxisY.Interval = 10;
+            SetAxis(chart, device);
 
             if (chart.Legends.Count > 0)
                 chart.Legends[0].Enabled = false;
@@ -560,22 +802,55 @@ namespace GHelper
 
         private void TrackPower_MouseUp(object? sender, MouseEventArgs e)
         {
-            Program.settingsForm.AutoPower();
+            Task.Run(() =>
+            {
+                modeControl.AutoPower(true);
+            });
         }
 
 
-        public void InitBoost()
+        private void TrackPower_KeyUp(object? sender, KeyEventArgs e)
         {
-            int boost = NativeMethods.GetCPUBoost();
+            Task.Run(() =>
+            {
+                modeControl.AutoPower(true);
+            });
+        }
+
+        public void InitPowerPlan()
+        {
+            int boost = PowerNative.GetCPUBoost();
             if (boost >= 0)
                 comboBoost.SelectedIndex = Math.Min(boost, comboBoost.Items.Count - 1);
+
+            string powerMode = PowerNative.GetPowerMode();
+            bool batterySaver = PowerNative.GetBatterySaverStatus();
+
+            comboPowerMode.Enabled = !batterySaver;
+
+            if (batterySaver) 
+                comboPowerMode.SelectedIndex = 0;
+            else
+                comboPowerMode.SelectedValue = powerMode;
+
+        }
+
+        private void ComboPowerMode_Changed(object? sender, EventArgs e)
+        {
+            string powerMode = (string)comboPowerMode.SelectedValue;
+            PowerNative.SetPowerMode(powerMode);
+
+            if (PowerNative.GetDefaultPowerMode(Modes.GetCurrentBase()) != powerMode)
+                AppConfig.SetMode("powermode", powerMode);
+            else
+                AppConfig.RemoveMode("powermode");
         }
 
         private void ComboBoost_Changed(object? sender, EventArgs e)
         {
             if (AppConfig.GetMode("auto_boost") != comboBoost.SelectedIndex)
             {
-                NativeMethods.SetCPUBoost(comboBoost.SelectedIndex);
+                PowerNative.SetCPUBoost(comboBoost.SelectedIndex);
             }
             AppConfig.SetMode("auto_boost", comboBoost.SelectedIndex);
         }
@@ -586,7 +861,7 @@ namespace GHelper
             CheckBox chk = (CheckBox)sender;
 
             AppConfig.SetMode("auto_apply_power", chk.Checked ? 1 : 0);
-            Program.settingsForm.SetPerformanceMode();
+            modeControl.SetPerformanceMode();
 
         }
 
@@ -596,111 +871,147 @@ namespace GHelper
             CheckBox chk = (CheckBox)sender;
 
             AppConfig.SetMode("auto_apply", chk.Checked ? 1 : 0);
-            Program.settingsForm.SetPerformanceMode();
+            modeControl.SetPerformanceMode();
 
         }
 
+        public void InitAxis()
+        {
+            if (this == null || this.Text == "") return;
+
+            Invoke(delegate
+            {
+                buttonCalibrate.Enabled = true;
+                SetAxis(chartCPU, AsusFan.CPU);
+                SetAxis(chartGPU, AsusFan.GPU);
+                if (chartMid.Visible) SetAxis(chartMid, AsusFan.Mid);
+            });
+        }
 
         public void LabelFansResult(string text)
         {
-            labelFansResult.Text = text;
-            labelFansResult.Visible = (text.Length > 0);
-        }
+            if (text.Length > 0) Logger.WriteLine(text);
 
-        private void Fans_FormClosing(object? sender, FormClosingEventArgs e)
-        {
+            if (this == null || this.Text == "") return;
 
-            /*
-            if (e.CloseReason == CloseReason.UserClosing)
+            Invoke(delegate
             {
-                e.Cancel = true;
-                Hide();
-            }*/
+                labelFansResult.Text = text;
+                labelFansResult.Visible = (text.Length > 0);
+            });
         }
 
 
-        public void InitPower(bool changed = false)
+        public void InitPower()
         {
 
-            bool modeA0 = (Program.acpi.DeviceGet(AsusACPI.PPT_TotalA0) >= 0 || RyzenControl.IsAMD());
+            bool modeA = Program.acpi.DeviceGet(AsusACPI.PPT_APUA0) >= 0 || RyzenControl.IsAMD();
             bool modeB0 = Program.acpi.IsAllAmdPPT();
             bool modeC1 = Program.acpi.DeviceGet(AsusACPI.PPT_APUC1) >= 0;
 
-            panelA0.Visible = modeA0;
-            panelB0.Visible = modeB0;
+            panelTotal.Visible = modeA;
+            panelCPU.Visible = modeB0;
 
-            panelApplyPower.Visible = panelTitleCPU.Visible = modeA0 || modeB0 || modeC1;
+            panelApplyPower.Visible = panelTitleCPU.Visible = modeA || modeB0 || modeC1;
 
 
             // All AMD version has B0 but doesn't have C0 (Nvidia GPU) settings
             if (modeB0)
             {
-                labelLeftA0.Text = "Platform (CPU + GPU)";
-                labelLeftB0.Text = "CPU";
-                panelC1.Visible = false;
+                labelLeftTotal.Text = "Platform (CPU + GPU)";
+                labelLeftCPU.Text = "CPU";
+                panelFast.Visible = false;
+                panelSlow.Visible = false;
             }
             else
             {
-                labelLeftA0.Text = "CPU Slow (SPL + sPPT)";
-                labelLeftC1.Text = "CPU Fast (fPPT)";
-                panelC1.Visible = modeC1;
+                panelSlow.Visible = modeA;
+
+                if (RyzenControl.IsAMD())
+                {
+                    labelLeftTotal.Text = "SPL (CPU sustained)";
+                    labelLeftSlow.Text = "sPPT (CPU 2 min boost)";
+                    labelLeftFast.Text = "fPPT (CPU 2 sec boost)";
+                    panelFast.Visible = modeC1;
+                    
+                }
+                else
+                {
+                    labelLeftTotal.Text = "PL1 (CPU sustained)";
+                    labelLeftSlow.Text = "PL2 (CPU 2 min boost)";
+                    panelFast.Visible = false;
+                }
+
             }
 
-            int limit_total;
-            int limit_cpu;
-            int limit_fast;
+            checkApplyPower.Checked = AppConfig.IsMode("auto_apply_power");
 
-            bool apply = AppConfig.IsMode("auto_apply_power");
+            int limit_total = AppConfig.GetMode("limit_total", AsusACPI.DefaultTotal);
+            int limit_slow = AppConfig.GetMode("limit_slow", limit_total);
+            int limit_fast = AppConfig.GetMode("limit_fast", limit_total);
+            int limit_cpu = AppConfig.GetMode("limit_cpu", AsusACPI.DefaultCPU);
 
-            if (changed)
-            {
-                limit_total = trackA0.Value;
-                limit_cpu = trackB0.Value;
-                limit_fast = trackC1.Value;
-            }
-            else
-            {
-                limit_total = AppConfig.GetMode("limit_total");
-                limit_cpu = AppConfig.GetMode("limit_cpu");
-                limit_fast = AppConfig.GetMode("limit_fast");
-            }
-
-            if (limit_total < 0) limit_total = AsusACPI.DefaultTotal;
             if (limit_total > AsusACPI.MaxTotal) limit_total = AsusACPI.MaxTotal;
             if (limit_total < AsusACPI.MinTotal) limit_total = AsusACPI.MinTotal;
 
-            if (limit_cpu < 0) limit_cpu = AsusACPI.DefaultCPU;
             if (limit_cpu > AsusACPI.MaxCPU) limit_cpu = AsusACPI.MaxCPU;
             if (limit_cpu < AsusACPI.MinCPU) limit_cpu = AsusACPI.MinCPU;
-            if (limit_cpu > limit_total) limit_cpu = limit_total;
+            
+            if (limit_slow > AsusACPI.MaxTotal) limit_slow = AsusACPI.MaxTotal;
+            if (limit_slow < AsusACPI.MinTotal) limit_slow = AsusACPI.MinTotal;
 
-            if (limit_fast < 0) limit_fast = AsusACPI.DefaultTotal;
             if (limit_fast > AsusACPI.MaxTotal) limit_fast = AsusACPI.MaxTotal;
             if (limit_fast < AsusACPI.MinTotal) limit_fast = AsusACPI.MinTotal;
 
-            trackA0.Value = limit_total;
-            trackB0.Value = limit_cpu;
-            trackC1.Value = limit_fast;
+            trackTotal.Value = limit_total;
+            trackSlow.Value = limit_slow;
+            trackCPU.Value = limit_cpu;
+            trackFast.Value = limit_fast;
 
-            checkApplyPower.Checked = apply;
-
-            labelA0.Text = trackA0.Value.ToString() + "W";
-            labelB0.Text = trackB0.Value.ToString() + "W";
-            labelC1.Text = trackC1.Value.ToString() + "W";
-
-            AppConfig.SetMode("limit_total", limit_total);
-            AppConfig.SetMode("limit_cpu", limit_cpu);
-            AppConfig.SetMode("limit_fast", limit_fast);
-
+            SavePower();
 
         }
 
-
-        private void TrackPower_Scroll(object? sender, EventArgs e)
+        private void SavePower()
         {
-            InitPower(true);
+            labelTotal.Text = trackTotal.Value.ToString() + "W";
+            labelSlow.Text = trackSlow.Value.ToString() + "W";
+            labelCPU.Text = trackCPU.Value.ToString() + "W";
+            labelFast.Text = trackFast.Value.ToString() + "W";
+
+            AppConfig.SetMode("limit_total", trackTotal.Value);
+            AppConfig.SetMode("limit_slow", trackSlow.Value);
+            AppConfig.SetMode("limit_cpu", trackCPU.Value);
+            AppConfig.SetMode("limit_fast", trackFast.Value);
         }
 
+        private void TrackTotal_Scroll(object? sender, EventArgs e)
+        {
+            if (trackTotal.Value > trackSlow.Value) trackSlow.Value = trackTotal.Value;
+            if (trackTotal.Value > trackFast.Value) trackFast.Value = trackTotal.Value;
+            if (trackTotal.Value < trackCPU.Value) trackCPU.Value = trackTotal.Value;
+            SavePower();
+        }
+
+        private void TrackSlow_Scroll(object? sender, EventArgs e)
+        {
+            if (trackSlow.Value < trackTotal.Value) trackTotal.Value = trackSlow.Value;
+            if (trackSlow.Value > trackFast.Value) trackFast.Value = trackSlow.Value;
+            SavePower();
+        }
+
+        private void TrackFast_Scroll(object? sender, EventArgs e)
+        {
+            if (trackFast.Value < trackSlow.Value) trackSlow.Value = trackFast.Value;
+            if (trackFast.Value < trackTotal.Value) trackTotal.Value = trackFast.Value;
+            SavePower();
+        }
+
+        private void TrackCPU_Scroll(object? sender, EventArgs e)
+        {
+            if (trackCPU.Value > trackTotal.Value) trackTotal.Value = trackCPU.Value;
+            SavePower();
+        }
 
         public void InitFans()
         {
@@ -708,7 +1019,7 @@ namespace GHelper
             int chartCount = 2;
 
             // Middle / system fan check
-            if (!AsusACPI.IsEmptyCurve(Program.acpi.GetFanCurve(AsusFan.Mid)))
+            if (!AsusACPI.IsEmptyCurve(Program.acpi.GetFanCurve(AsusFan.Mid)) || Program.acpi.GetFan(AsusFan.Mid) >= 0)
             {
                 AppConfig.Set("mid_fan", 1);
                 chartCount++;
@@ -738,7 +1049,7 @@ namespace GHelper
             try
             {
                 if (chartCount > 2)
-                    Size = MinimumSize = new Size(0, (int)(ControlHelper.GetDpiScale(this).Value * (chartCount * 200 + 100)));
+                    Size = MinimumSize = new Size(Size.Width, Math.Max(MinimumSize.Height, (int)(ControlHelper.GetDpiScale(this).Value * (chartCount * 200 + 100))));
             }
             catch (Exception ex)
             {
@@ -809,7 +1120,6 @@ namespace GHelper
 
         }
 
-
         private void ButtonReset_Click(object? sender, EventArgs e)
         {
 
@@ -828,42 +1138,53 @@ namespace GHelper
             AppConfig.SetMode("auto_apply", 0);
             AppConfig.SetMode("auto_apply_power", 0);
 
-            Program.acpi.DeviceSet(AsusACPI.PerformanceMode, Modes.GetCurrentBase(), "Mode");
-
-            if (Program.acpi.IsXGConnected())
-                AsusUSB.ResetXGM();
-
-            trackUV.Value = 0;
-            trackUViGPU.Value = 0;
-            trackTemp.Value = 96;
+            trackUV.Value = RyzenControl.MaxCPUUV;
+            trackUViGPU.Value = RyzenControl.MaxIGPUUV;
+            trackTemp.Value = RyzenControl.MaxTemp;
 
             AdvancedScroll();
-            AppConfig.SetMode("cpu_temp", -1);
+            AppConfig.RemoveMode("cpu_temp");
+
+            modeControl.ResetPerformanceMode();
+
+            InitPowerPlan();
+
+            if (Program.acpi.IsXGConnected()) XGM.Reset();
+
 
             if (gpuVisible)
             {
+                trackGPUClockLimit.Value = NvidiaGpuControl.MaxClockLimit;
                 trackGPUCore.Value = 0;
                 trackGPUMemory.Value = 0;
+                
                 trackGPUBoost.Value = AsusACPI.MaxGPUBoost;
                 trackGPUTemp.Value = AsusACPI.MaxGPUTemp;
 
-                AppConfig.SetMode("gpu_boost", trackGPUBoost.Value);
-                AppConfig.SetMode("gpu_temp", trackGPUTemp.Value);
-                AppConfig.SetMode("gpu_core", trackGPUCore.Value);
-                AppConfig.SetMode("gpu_memory", trackGPUMemory.Value);
+                //AppConfig.SetMode("gpu_boost", trackGPUBoost.Value);
+                //AppConfig.SetMode("gpu_temp", trackGPUTemp.Value);
+                
+                AppConfig.RemoveMode("gpu_boost");
+                AppConfig.RemoveMode("gpu_temp");
+
+                AppConfig.RemoveMode("gpu_power");
+                AppConfig.RemoveMode("gpu_clock_limit");
+                AppConfig.RemoveMode("gpu_core");
+                AppConfig.RemoveMode("gpu_memory");
+
+                InitGPUPower();
 
                 VisualiseGPUSettings();
-                Program.settingsForm.SetGPUClocks(true);
-                Program.settingsForm.SetGPUPower();
+                modeControl.SetGPUClocks(true, true);
+                modeControl.SetGPUPower();
             }
 
         }
 
-        private void ChartCPU_MouseUp(object? sender, MouseEventArgs e)
+        private void Chart_Save()
         {
             curPoint = null;
             curIndex = -1;
-
             labelTip.Visible = false;
 
             SaveProfile(seriesCPU, AsusFan.CPU);
@@ -875,12 +1196,23 @@ namespace GHelper
             if (AppConfig.Is("xgm_fan"))
                 SaveProfile(seriesXGM, AsusFan.XGM);
 
-            Program.settingsForm.AutoFans();
-
-
+            modeControl.AutoFans();
         }
 
-        private void ChartCPU_MouseMove(object? sender, MouseEventArgs e)
+        private void ChartCPU_MouseUp(object? sender, MouseEventArgs e)
+        {
+            Chart_Save();
+        }
+
+
+        private void ChartCPU_MouseLeave(object? sender, EventArgs e)
+        {
+            curPoint = null;
+            curIndex = -1;
+            labelTip.Visible = false;
+        }
+
+        private void ChartCPU_MouseMove(object? sender, MouseEventArgs e, AsusFan device)
         {
 
             if (sender is null) return;
@@ -919,7 +1251,7 @@ namespace GHelper
                     if (dy < 0) dy = 0;
                     if (dy > fansMax) dy = fansMax;
 
-                    dymin = (dx - 65) * 1.2;
+                    dymin = (dx - 70) * 1.2;
 
                     if (dy < dymin) dy = dymin;
 
@@ -941,9 +1273,9 @@ namespace GHelper
                         tip = true;
                     }
 
-                    labelTip.Text = Math.Round(curPoint.XValue) + "C, " + ChartPercToRPM((int)curPoint.YValues[0], " " + Properties.Strings.RPM);
+                    labelTip.Text = Math.Floor(curPoint.XValue) + "C, " + ChartYLabel((int)curPoint.YValues[0], device, " " + Properties.Strings.RPM);
                     labelTip.Top = e.Y + ((Control)sender).Top;
-                    labelTip.Left = e.X - 50;
+                    labelTip.Left = Math.Min(chart.Width - labelTip.Width - 20, e.X - 50);
 
                 }
                 catch
@@ -972,8 +1304,8 @@ namespace GHelper
         {
 
             // Get the neighboring DataPoints of the hit point
-            DataPoint upperPoint = null;
-            DataPoint lowerPoint = null;
+            DataPoint? upperPoint = null;
+            DataPoint? lowerPoint = null;
 
             if (index > 0)
             {
